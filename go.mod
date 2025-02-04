@@ -1,4 +1,4 @@
-module conall/pull-request-writer
+module conall/pr-writer
 
 go 1.23.5
 
