@@ -48,11 +48,12 @@ func EditPr(title string, body string, pr PullRequest) {
 }
 
 func CreatePr(title string, body string, targetBranch string) {
-	_, _, err := gh.Exec("pr", "create", "--body", body, "--title", title, "--base", targetBranch)
+	response, _, err := gh.Exec("pr", "create", "--body", body, "--title", title, "--base", targetBranch)
 	if err != nil {
-		log.Println("Failed to create PR.")
+		log.Printf("Failed to create PR for: %s", targetBranch)
 		log.Fatal(err)
 	}
+	fmt.Println(response.String())
 }
 
 func EditOrUpdatePr(title string, body string, targetBranch string) {
