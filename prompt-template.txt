@@ -19,11 +19,13 @@ It must be formatted in Github-flavoured Markdown.
 The `Link to ticket` must contain the Jira link I have provided at the top of the file. 
 The git patch contains not just the changes, but also the commit messages. You can use them to work out not only what has changed, but why.
 
-Please write in a formal style, but try to avoid being too robotic.
+Please write in a terse style. Minimal detail, but make sure not to loose information.
 
 Refer to files and code references where appropriate.
 
 The audience is developers at a tech company, they are aware of the technology being used so they do not need thorough explanations of the entire tech stack. They want concise, clear summaries of what changes have been made.
+
+Please adhere to the response schema.
 
 ###Example###
 
