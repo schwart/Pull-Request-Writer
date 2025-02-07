@@ -164,5 +164,6 @@ func main() {
 	fmt.Println("Saved response to clipboard")
 	// save response to clipboard
 	clipboard.Write(clipboard.FmtText, []byte(response))
+	OpenInVim("Some text")
 
 }
