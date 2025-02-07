@@ -162,4 +162,8 @@ func main() {
 	// save string to clipboard
 	clipboard.Write(clipboard.FmtText, []byte(outputString))
 
+	response := CallGemini(outputString)
+	fmt.Println("Response from Gemini")
+	fmt.Println(response)
+
 }
