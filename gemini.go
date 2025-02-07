@@ -8,7 +8,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func CallGemini(gitPatch string) string {
+func CallGemini(gitPatch string, modelName string) string {
 	ctx := context.Background()
 	apiKey := "AIzaSyCxX5Auy-LfDTeYuKWza6xmKvzfMtd8PxU"
 	client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
@@ -17,7 +17,7 @@ func CallGemini(gitPatch string) string {
 	}
 	defer client.Close()
 
-	model := client.GenerativeModel("gemini-2.0-flash")
+	model := client.GenerativeModel(modelName)
 	model.SystemInstruction = genai.NewUserContent(genai.Text("You are a developer who is writing a pull request on Github."))
 	resp, err := model.GenerateContent(ctx, genai.Text(gitPatch))
 	if err != nil {
