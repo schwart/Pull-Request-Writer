@@ -11,7 +11,6 @@ import (
 	"text/template"
 
 	"github.com/charmbracelet/huh"
-	"golang.design/x/clipboard"
 )
 
 // embed the prompt file
@@ -161,8 +160,16 @@ func main() {
 
 	
 	response := CallGemini(outputString, "gemini-2.0-flash")
-	fmt.Println("Saved response to clipboard")
 	// save response to clipboard
-	clipboard.Write(clipboard.FmtText, []byte(response))
-
+	editedTitle, err := EditResponseInVim(response.Title)
+	if err != nil {
+		log.Fatal(err)
+	}
+	editedBody, err := EditResponseInVim(response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// clipboard.Write(clipboard.FmtText, []byte(editedTitle))
+	// fmt.Println("Saved response to clipboard")
+	EditOrUpdatePr(editedTitle, editedBody)
 }
