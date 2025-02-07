@@ -163,7 +163,10 @@ func main() {
 	response := CallGemini(outputString, "gemini-2.0-flash")
 	fmt.Println("Saved response to clipboard")
 	// save response to clipboard
-	clipboard.Write(clipboard.FmtText, []byte(response))
-	OpenInVim("Some text")
+	editedResponse, err := EditResponseInVim(response)
+	if err != nil {
+		log.Fatal(err)
+	}
+	clipboard.Write(clipboard.FmtText, []byte(editedResponse))
 
 }
