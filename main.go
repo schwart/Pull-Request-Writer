@@ -157,9 +157,12 @@ func main() {
 		log.Fatal("Cannot template prompt, you're on your own.")
 	}
 
-	fmt.Println("Completed templating prompt, saving to clipboard.")
+	fmt.Println("Completed templating prompt, calling Gemini")
 
-	// save string to clipboard
-	clipboard.Write(clipboard.FmtText, []byte(outputString))
+	
+	response := CallGemini(outputString, "gemini-2.0-flash")
+	fmt.Println("Saved response to clipboard")
+	// save response to clipboard
+	clipboard.Write(clipboard.FmtText, []byte(response))
 
 }
