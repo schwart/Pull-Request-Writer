@@ -47,15 +47,15 @@ func EditPr(title string, body string, pr PullRequest) {
 	fmt.Println(response.String())
 }
 
-func CreatePr(title string, body string) {
-	_, _, err := gh.Exec("pr", "create", "--body", body, "--title", title)
+func CreatePr(title string, body string, targetBranch string) {
+	_, _, err := gh.Exec("pr", "create", "--body", body, "--title", title, "--base", targetBranch)
 	if err != nil {
 		log.Println("Failed to create PR.")
 		log.Fatal(err)
 	}
 }
 
-func EditOrUpdatePr(title string, body string) {
+func EditOrUpdatePr(title string, body string, targetBranch string) {
 	// if we have an pullRequest, then we need to edit the current PR
 	// if we don't, then we need to update it
 	log.Println("Getting PR info")
@@ -65,7 +65,7 @@ func EditOrUpdatePr(title string, body string) {
 	// if there's an error, it's likely there's no PR
 	if err != nil {
 		log.Println("Creating PR as non-existed prior.")
-		CreatePr(title, body)
+		CreatePr(title, body, targetBranch)
 		return
 	}
 	log.Println("Editing PR with new title and body.")

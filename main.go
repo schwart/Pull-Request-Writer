@@ -158,7 +158,6 @@ func main() {
 
 	fmt.Println("Completed templating prompt, calling Gemini")
 
-	
 	response := CallGemini(outputString, "gemini-2.0-flash")
 	// save response to clipboard
 	editedTitle, err := EditResponseInVim(response.Title)
@@ -171,5 +170,5 @@ func main() {
 	}
 	// clipboard.Write(clipboard.FmtText, []byte(editedTitle))
 	// fmt.Println("Saved response to clipboard")
-	EditOrUpdatePr(editedTitle, editedBody)
+	EditOrUpdatePr(editedTitle, editedBody, targetBranch)
 }
