@@ -6,6 +6,7 @@ import (
 	"log"
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
+	_ "embed"
 )
 
 type PullRequestResponse struct {
@@ -13,10 +14,12 @@ type PullRequestResponse struct {
 	Body string `json:"body"`
 }
 
+//go:embed gemini-api-key.txt
+var geminiApiKey string
+
 func CallGemini(gitPatch string, modelName string) *PullRequestResponse {
 	ctx := context.Background()
-	apiKey := "AIzaSyCxX5Auy-LfDTeYuKWza6xmKvzfMtd8PxU"
-	client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
+	client, err := genai.NewClient(ctx, option.WithAPIKey(geminiApiKey))
 	if err != nil {
 		log.Fatal(err)
 	}
