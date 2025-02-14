@@ -60,18 +60,38 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Completed templating prompt, calling Gemini")
-
 	response := CallGemini(prompt, "gemini-2.0-flash", config.GeminiApiKey)
-
-	editedTitle, err := EditResponseInVim(response.Title)
-	if err != nil {
-		log.Fatal(err)
-	}
-	editedBody, err := EditResponseInVim(response.Body)
+	editedResponse, err := EditResponseForm(response)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	EditOrUpdatePr(editedTitle, editedBody, inputs.TargetBranch)
+	pr, err := GetPrId()
+	// if this errors, then the pr doesn't exist
+	if err != nil {
+		// confirm with the user that they want to create it
+		shouldCreate, err := CreatePrForm(inputs.TargetBranch, inputs.SourceBranch)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if shouldCreate {
+			CreatePr(editedResponse.Title, editedResponse.Body, inputs.TargetBranch)
+		}
+	} else {
+		// confirm with the user that they want to edit it
+		shouldEdit, err := EditPrForm(inputs.TargetBranch, inputs.SourceBranch)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if shouldEdit {
+			EditPr(editedResponse.Title, editedResponse.Body, *pr)
+		}
+	}
+
+	// finally, get the PR URL and show it to the user
+	prUrl, err := GetPrUrl()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("PR URL: %s", prUrl)
 }

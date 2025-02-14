@@ -8,7 +8,6 @@ import (
 
 func getGitPatch(targetBranch, sourceBranch string) (string, error) {
 	targetToSource := fmt.Sprintf("%s..%s", targetBranch, sourceBranch)
-	fmt.Println(targetToSource)
 	// eg: git log -p --full-diff master..RC-001-some-branch
 	cmd := exec.Command("git", "log", "-p", "--full-diff", targetToSource)
 

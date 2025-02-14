@@ -2,15 +2,18 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/cli/go-gh/v2"
 	"log"
 	"strconv"
-	"github.com/cli/go-gh/v2"
 )
 
 type PullRequest struct {
-	Id int `json:"number"`
+	Id    int    `json:"number"`
 	State string `json:"state"`
+}
+
+type PullRequestUrl struct {
+	Url string `json:"url"`
 }
 
 func GetPrId() (*PullRequest, error) {
@@ -24,51 +27,41 @@ func GetPrId() (*PullRequest, error) {
 	if err := json.Unmarshal(response.Bytes(), &id); err != nil {
 		return nil, err
 	}
-	log.Println(response.String())
 	return &id, nil
 }
 
-func EditPr(title string, body string, pr PullRequest) {
+func GetPrUrl() (string, error) {
+	response, _, err := gh.Exec("pr", "view", "--json", "url")
+	if err != nil {
+		// will error if there's no PRs for the current branch
+		return "", err
+	}
 
+	url := PullRequestUrl{}
+	if err := json.Unmarshal(response.Bytes(), &url); err != nil {
+		return "", err
+	}
+	return url.Url, nil
+}
+
+func EditPr(title string, body string, pr PullRequest) {
 	// check if the PR is closed, if it is, re-open it
 	if pr.State == "CLOSED" {
 		_, _, err := gh.Exec("pr", "reopen", strconv.Itoa(pr.Id))
 		if err != nil {
-			log.Printf("Failed to reopen PR: %d", pr.Id)
-			log.Fatal(err)
+			log.Fatalf("Failed to reopen PR: %d %v", pr.Id, err)
 		}
 	}
 
-	response, _, err := gh.Exec("pr", "edit", strconv.Itoa(pr.Id), "--body", body, "--title", title)
+	_, _, err := gh.Exec("pr", "edit", strconv.Itoa(pr.Id), "--body", body, "--title", title)
 	if err != nil {
-		log.Printf("Failed to edit PR: %d", pr.Id)
-		log.Fatal(err)
+		log.Fatalf("Failed to edit PR: %d, %v", pr.Id, err)
 	}
-	fmt.Println(response.String())
 }
 
 func CreatePr(title string, body string, targetBranch string) {
-	response, _, err := gh.Exec("pr", "create", "--body", body, "--title", title, "--base", targetBranch)
+	_, _, err := gh.Exec("pr", "create", "--body", body, "--title", title, "--base", targetBranch)
 	if err != nil {
-		log.Printf("Failed to create PR for: %s", targetBranch)
-		log.Fatal(err)
+		log.Fatalf("Failed to create PR for: %s, %v", targetBranch, err)
 	}
-	fmt.Println(response.String())
-}
-
-func EditOrUpdatePr(title string, body string, targetBranch string) {
-	// if we have an pullRequest, then we need to edit the current PR
-	// if we don't, then we need to update it
-	log.Println("Getting PR info")
-	pullRequest, err := GetPrId()
-	// using an error to indicate that there's no PR for this branch
-	// it might indicate an error in unmarshalling the JSON but I think that's unlikely hehe
-	// if there's an error, it's likely there's no PR
-	if err != nil {
-		log.Println("Creating PR as non-existed prior.")
-		CreatePr(title, body, targetBranch)
-		return
-	}
-	log.Println("Editing PR with new title and body.")
-	EditPr(title, body, *pullRequest)
 }
