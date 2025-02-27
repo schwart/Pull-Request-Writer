@@ -49,18 +49,30 @@ func CallGemini(gitPatch string, modelName string, geminiApiKey string) *PullReq
 }
 
 func formatResponse(resp *genai.GenerateContentResponse) *PullRequestResponse {
+	responseObject := PullRequestResponse{
+		Title: "",
+		Body:  "",
+	}
 	for _, cand := range resp.Candidates {
 		if cand.Content != nil {
 			for _, part := range cand.Content.Parts {
 				if txt, ok := part.(genai.Text); ok {
-					responseObject := PullRequestResponse{}
-					if err := json.Unmarshal([]byte(txt), &responseObject); err != nil {
+					currentPart := PullRequestResponse{}
+					if err := json.Unmarshal([]byte(txt), &currentPart); err != nil {
 						log.Fatal(err)
 					}
-					return &responseObject
+
+					if currentPart.Title != "" {
+						responseObject.Title = currentPart.Title
+					}
+
+					responseObject.Body += currentPart.Body
 				}
 			}
 		}
 	}
-	return nil
+	if responseObject.Title == "" || responseObject.Body == "" {
+		return nil
+	}
+	return &responseObject
 }
