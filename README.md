@@ -2,13 +2,19 @@
 
 Creates a short prompt that you can paste into an LLM and have it write a PR for you.
 
-## Installing
+## Prerequisites
 
 - Make sure you have [go](https://go.dev/doc/install) installed.
+- Get a Gemini API key (you can get one from AI Studio)
+- Get a JIRA API key for your organisation
+- Make a `config.json` file at the root of the repo with your keys and jira info in it.
+
+## Installing
+
 - Clone it: `git clone git@github.com:schwart/Pull-Request-Writer.git`
 - `cd` into the repo.
 - Run `go install` to have it build and install the binary.
-- Optional: set `GOBIN` to change the install location. 
+- Optional: set `GOBIN` to change the install location.
 - Check `go env GOBIN` to see what the value is (if you haven't changed it). The default is `~/go/bin`.
 - Make sure it's on your `$PATH` or you won't be able to run it from anywhere on your machine!
 
