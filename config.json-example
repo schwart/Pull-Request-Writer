@@ -1,0 +1,6 @@
+{
+  "GEMINI-API-KEY": "GEMINI-KEY",
+  "JIRA-DOMAIN": "organisation.atlassian.net",
+  "JIRA-EMAIL": "your-email@organisation.com",
+  "JIRA-API-KEY": "JIRA-API-KEY"
+}
