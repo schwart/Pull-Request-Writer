@@ -6,10 +6,11 @@ import (
 	"strings"
 )
 
-func getGitPatch(targetBranch, sourceBranch string) (string, error) {
+func getGitPatch(targetBranch, sourceBranch string, workingDirectory string) (string, error) {
 	targetToSource := fmt.Sprintf("%s..%s", targetBranch, sourceBranch)
 	// eg: git log -p --full-diff master..RC-001-some-branch
 	cmd := exec.Command("git", "log", "-p", "--full-diff", targetToSource)
+	cmd.Dir = workingDirectory
 
 	output, err := cmd.Output()
 	if err != nil {
@@ -27,8 +28,9 @@ func isGitRepository() bool {
 	return err == nil
 }
 
-func getGitBranches() ([]string, error) {
+func getGitBranches(workingDirectory string) ([]string, error) {
 	cmd := exec.Command("git", "branch", "--sort=-committerdate")
+	cmd.Dir = workingDirectory
 	output, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("Error getting git branches: %v", err)
