@@ -2,32 +2,55 @@ package main
 
 import (
 	_ "embed"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 )
 
-func initialChecks() {
+func checkDirectoryExists(directory string) bool {
+	if stat, err := os.Stat(directory); err == nil && stat.IsDir() {
+		return true
+	}
+	return false
+}
+
+func getWorkingDirectory(otherDirectory string) (*string, error) {
+	if otherDirectory != "" {
+		if checkDirectoryExists(otherDirectory) {
+			return &otherDirectory, nil
+		}
+		return nil, fmt.Errorf("error: directory %s does not exist", otherDirectory)
+	}
+
 	currentDir, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("Error: can't get current directory. %v", err)
+		return nil, fmt.Errorf("error: can't get current directory. %v", err)
 	}
 
 	if !isGitRepository() {
 		log.Fatalf("Current directory: %s is not a git repository", currentDir)
 	}
+	return &currentDir, nil
 }
 
 func main() {
-	initialChecks()
+	debugDirectory := flag.String("directory", "", "Directory to run the script in (if not the current one).")
 
-	inputs, err := InitialForm()
+	flag.Parse()
+
+	workingDirectory, err := getWorkingDirectory(*debugDirectory)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	inputs, err := InitialForm(*workingDirectory)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// get the patch between the input branches
-	gitPatch, err := getGitPatch(inputs.TargetBranch, inputs.SourceBranch)
+	gitPatch, err := getGitPatch(inputs.TargetBranch, inputs.SourceBranch, *workingDirectory)
 	if err != nil {
 		log.Fatal(err)
 	}
