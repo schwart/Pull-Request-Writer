@@ -29,6 +29,11 @@ Run `pr-writer`, if you're currently inside a git repo, you'll see a form appear
 Source branch: the branch that was most recently commited to.
 Target branch: either "master", "main" or blank if neither of them can be found in the list of branches.
 
+### Edits
+
+You can make edits in your default terminal editor (env var: `EDITOR`) when you're editing the PR description field.
+Just press `ctrl-e` and it'll launch the editor, save it and it'll return you to the form.
+
 ### Suggestions
 
 Both branch inputs support auto-complete. Start typing and you'll see a match appear, press `ctrl-e` to fill it.
