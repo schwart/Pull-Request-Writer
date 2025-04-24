@@ -11,7 +11,7 @@ type InitialFormOutputs struct {
 	TargetBranch string
 }
 
-func InitialForm() (*InitialFormOutputs, error) {
+func InitialForm(workingDirectory string) (*InitialFormOutputs, error) {
 	var (
 		jiraTicket   string
 		sourceBranch string
@@ -19,7 +19,7 @@ func InitialForm() (*InitialFormOutputs, error) {
 	)
 
 	// set up variables for the form
-	gitBranchSuggestions, _ := getGitBranches()
+	gitBranchSuggestions, _ := getGitBranches(workingDirectory)
 	sourceBranch = gitBranchSuggestions[0]
 	targetBranch = getDefaultTargetBranch(gitBranchSuggestions)
 
@@ -54,8 +54,8 @@ func InitialForm() (*InitialFormOutputs, error) {
 func EditResponseForm(response *PullRequestResponse) (*PullRequestResponse, error) {
 
 	var editedResponse PullRequestResponse
-	editedResponse.Body = response.Body
 	editedResponse.Title = response.Title
+	editedResponse.Body = response.Body
 
 	form := huh.NewForm(
 		huh.NewGroup(
