@@ -4,6 +4,7 @@ Creates a short prompt that you can paste into an LLM and have it write a PR for
 
 ## Prerequisites
 
+- Install the [Github command line](https://cli.github.com/) and auth it 
 - Make sure you have [go](https://go.dev/doc/install) installed.
 - Get a Gemini API key (you can get one from AI Studio)
 - Get a JIRA API key for your organisation
